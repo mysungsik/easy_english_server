@@ -1,5 +1,6 @@
 package com.easyeng.mschoi.utils;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
@@ -17,8 +18,8 @@ import io.jsonwebtoken.UnsupportedJwtException;
 @Component
 public class JwtUtil {
 	
-	// 서명을 위한 시크릿 키 생성
-	private String SECRET_KEY = "mschoi_sign_dlaslek";
+	// 서명을 위한 시크릿 키 생성 size >= 512 bits, Base64 Encoding
+	private String SECRET_KEY = Base64.getEncoder().encodeToString("kjhqwehaksjdhkzasdaasdasdasdasdasdsdasdjxchqkjwehkljhlkasjdlkaslkdjqwljk".getBytes());
 	
 	// 모든 클레임 추출 
 	public Claims extractClaimsAll(String jwt) {
