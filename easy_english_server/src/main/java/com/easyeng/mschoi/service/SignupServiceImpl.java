@@ -1,5 +1,7 @@
 package com.easyeng.mschoi.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,15 +16,19 @@ public class SignupServiceImpl  implements SignupService{
 	
 	private final SignupDAO dao;
 	
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
 	@Override
 	@Transactional
 	public int signup(Member member) {
 		
 	    try {
+	    	member.setMemberPw(bCryptPasswordEncoder.encode(member.getMemberPw()));
 	        Member savedMember = dao.save(member);
 	        return savedMember.getMemberNo(); // 저장된 객체의 ID 반환
 	    } catch (Exception e) {
-	        System.out.println("[Error] SIGN UP");
+	        System.out.println("[Error] SIGN UP : " + e);
 	        return 0; // 실패 시 0 반환
 	    }
 	}

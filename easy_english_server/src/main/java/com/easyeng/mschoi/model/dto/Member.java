@@ -5,16 +5,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@Entity
 @Table(name = "member")
-public class Member {
+// 기존에 사용하는 Member 에 SpringSecurity 화를 위해 UserDetails 를 구현
+public class Member implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,9 +44,9 @@ public class Member {
     @Column(name = "member_profile", length = 500)
     private String memberProfile;
 
-    @Column(name = "member_created_dt", nullable = false)
-    @ColumnDefault("(current_date)")
-    private LocalDate memberCreatedDt = LocalDate.now();
+    @Column(name = "member_created_dt", nullable = true)
+    @CreationTimestamp		// INSERT 시 자동 TIMESTAMP 생성
+    private Timestamp memberCreatedDt;
 
     @Column(name = "member_deleted_dt")
     @ColumnDefault("(current_date)")
@@ -50,4 +58,26 @@ public class Member {
 
     @Column(name = "word_level")
     private Integer wordLevel;
+    
+    @Column(name = "member_auth", length = 20)
+    @ColumnDefault("'ROLE_ADMIN'")
+    private String memberAuth;
+    
+    // Spring Security 에서 사용하기 위한 Authority
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return Collections.singletonList(new SimpleGrantedAuthority(memberAuth));
+	}
+
+	// Spring Security 에서 사용하기 위한 password
+	@Override
+	public String getPassword() {
+		return memberPw;
+	}
+
+	// Spring Security 에서 사용하기 위한 id
+	@Override
+	public String getUsername() {
+		return memberId;
+	}
 }
