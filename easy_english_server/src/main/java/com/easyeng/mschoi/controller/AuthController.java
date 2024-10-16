@@ -14,12 +14,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.easyeng.mschoi.model.dao.AuthDAO;
 import com.easyeng.mschoi.model.dto.Member;
 import com.easyeng.mschoi.utils.JwtUtil;
 
 @RestController
 @RequestMapping("/api/login")
 public class AuthController {
+	
+	@Autowired
+	private AuthDAO dao;
 	
 	@Autowired
 	private AuthenticationManager authManager;
@@ -37,13 +41,17 @@ public class AuthController {
 			// 2. Security Context 에 인증 정보를 저장
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			
+			Member memberInfo =  dao.findByMemberId(member.getMemberId());
+			
 			// 3. JWT 토큰 생성
 			Map<String, Object> claims = new HashMap<>();
 			claims.put("memberId", member.getMemberId());
-			claims.put("memberPw", member.getMemberPw());
+			claims.put("memberEmail", memberInfo.getMemberEmail());
+			claims.put("memberAuth", memberInfo.getMemberAuth());
 			String jwt = jwtUtil.createJWT(claims, member.getMemberId());
 			
 			// 4. JWT 응답
+			System.out.println(jwt);
 			return ResponseEntity.ok(jwt);
 		
 		} catch (Exception e) {

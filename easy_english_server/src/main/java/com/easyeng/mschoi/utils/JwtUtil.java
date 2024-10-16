@@ -40,8 +40,19 @@ public class JwtUtil {
 	
 	// 토큰에서 만료시간 추출
 	public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration); // Claims 의 getExpiration 메서드를 사용해 만료시간 추출
+		return extractClaim(token, Claims::getExpiration); // Claims 의 getExpiration 메서드를 사용해 만료시간 추출
     }
+	
+	// 토큰에서 memberEail 추출
+	public String extractMemberEmail(String token) {
+		return extractClaim(token, claims -> claims.get("memberEmail", String.class));
+	}
+	
+	// 토큰에서 memberAuth 추출
+	public String extractMemberAuth(String token) {
+		return extractClaim(token, claims -> claims.get("memberAuth", String.class));
+	}
+	
 	
 	// 토큰 만료 여부 추출 (만료시간이 현재 날짜 이전인지 확인)
 	public Boolean isTokenExpired(String token) {

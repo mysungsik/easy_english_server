@@ -9,8 +9,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.easyeng.mschoi.filters.JwtRequestFilter;
+import com.easyeng.mschoi.service.AuthService;
 import com.easyeng.mschoi.service.CustomUserDetailsService;
+import com.easyeng.mschoi.utils.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,9 +24,15 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 	
 	private final CustomUserDetailsService customUserDetailsService;
+    private final JwtUtil jwtUtil;
+    private final AuthService authService;
+	
 	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		JwtRequestFilter jwtRequestFilter = new JwtRequestFilter(jwtUtil, authService);
+		
+		
 		http
 		.csrf((csrfConfig)-> csrfConfig.disable())	// csrf 검증 제거
 		.headers((headerConfig) ->					// 헤더설정
@@ -34,6 +44,7 @@ public class SecurityConfig {
 					.anyRequest().authenticated());		// 나머지는 전부 확인 필요
 		
 		// TODO : JWT 필터 추가
+		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
 	
@@ -55,6 +66,4 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager(); // AuthenticationManager 설정
     }
-	
-	// TODO: 자동 로그인 로직 생성
 }
