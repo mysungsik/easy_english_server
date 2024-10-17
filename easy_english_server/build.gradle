@@ -30,6 +30,8 @@ dependencies {
 	implementation group: 'org.springframework.security', name: 'spring-security-taglibs'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation group: 'org.apache.poi', name: 'poi', version: '4.1.2'		// excel 파일 업로드용
+	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2' // excel 파일 업로드용
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'
