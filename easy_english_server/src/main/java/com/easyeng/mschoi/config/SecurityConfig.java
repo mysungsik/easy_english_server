@@ -43,7 +43,6 @@ public class SecurityConfig {
 					.requestMatchers("/**").permitAll()	// 일단 전부 허용하도록. 테스트목적
 					.anyRequest().authenticated());		// 나머지는 전부 확인 필요
 		
-		// TODO : JWT 필터 추가
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}

@@ -37,20 +37,25 @@ public class JwtUtil {
 	public String extractMemberId(String jwt) {
 		return extractClaim(jwt, Claims::getSubject);	// Claims 의 getSubject 메서드를 사용해 subject 추출
 	}
-	
 	// 토큰에서 만료시간 추출
 	public Date extractExpiration(String token) {
 		return extractClaim(token, Claims::getExpiration); // Claims 의 getExpiration 메서드를 사용해 만료시간 추출
     }
-	
 	// 토큰에서 memberEail 추출
 	public String extractMemberEmail(String token) {
 		return extractClaim(token, claims -> claims.get("memberEmail", String.class));
 	}
-	
 	// 토큰에서 memberAuth 추출
 	public String extractMemberAuth(String token) {
 		return extractClaim(token, claims -> claims.get("memberAuth", String.class));
+	}
+	// 토큰에서 memberNo 추출
+	public String extractMemberNo(String token) {
+		return extractClaim(token, claims -> claims.get("memberNo", String.class));
+	}
+	// 토큰에서 memberNickname 추출
+	public String extractMemberNickname(String token) {
+		return extractClaim(token, claims -> claims.get("memberNickname", String.class));
 	}
 	
 	
