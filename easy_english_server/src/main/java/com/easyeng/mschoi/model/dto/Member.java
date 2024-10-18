@@ -52,16 +52,29 @@ public class Member implements UserDetails{
     @ColumnDefault("(current_date)")
     private LocalDate memberDeletedDt;
 
-    @ManyToOne
-    @JoinColumn(name = "word_id", nullable = true)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "current_word_id", referencedColumnName = "word_id", nullable = true)
     private WordData wordData;
-
-    @Column(name = "word_level")
-    private Integer wordLevel;
+    
+    // 추가된 필드: word_level을 직접 매핑하지 않고, Getter를 통해 가져오기
+    @Transient // DB에 저장하지 않음, 계산된 필드 역할
+    public Integer getCurrentWordLevel() {
+    	return wordData != null ? wordData.getWordId() : null;
+    }
+    
+    @PrePersist
+    public void setDefaultCurrentWord() {
+    	if(this.wordData == null) {
+    		WordData defaultWord = new WordData();
+    		defaultWord.setWordId(1);
+    		this.wordData = defaultWord;
+    	}
+    }
+    
     
     @Column(name = "member_auth", length = 20)
-    @ColumnDefault("'ROLE_ADMIN'")
-    private String memberAuth;
+    @ColumnDefault("'ROLE_ADMIN'")			// member객체에 해당 key 자체가 없어야 Default 적용
+    private String memberAuth = "ROLE_ADMIN";	// 따라서, 코드레벨에서 기본값 설정
     
     // Spring Security 에서 사용하기 위한 Authority
 	@Override

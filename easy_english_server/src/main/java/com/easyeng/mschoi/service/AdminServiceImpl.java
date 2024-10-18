@@ -1,6 +1,7 @@
 package com.easyeng.mschoi.service;
 
 import java.io.File;
+import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -54,7 +55,6 @@ public class AdminServiceImpl implements AdminService {
 				
 				// 기존 데이터가 있다면, 업데이트하도록 find && Optional 객체이므로 orElse 사용가능
 				WordData wordData = dao.findByWordSpell(wordSpellData).orElse(new WordData());
-				
 				wordData.setWordSpell(wordSpellData);
 				int wordLevel = (!wordLevelData.equals("")) ? Integer.parseInt(wordLevelData) : 1;
 				wordData.setWordLevel(wordLevel);
