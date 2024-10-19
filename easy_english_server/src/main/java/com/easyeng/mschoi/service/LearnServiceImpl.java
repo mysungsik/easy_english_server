@@ -1,11 +1,9 @@
 package com.easyeng.mschoi.service;
 
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.easyeng.mschoi.model.dao.LearnDAO;
-import com.easyeng.mschoi.model.dto.Member;
 import com.easyeng.mschoi.model.dto.WordData;
 
 import lombok.RequiredArgsConstructor;
