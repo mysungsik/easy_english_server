@@ -1,6 +1,7 @@
 package com.easyeng.mschoi.service;
 
 import java.io.File;
+import com.google.cloud.translate.*;
 
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -8,6 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +26,11 @@ import reactor.core.publisher.Mono;
 public class AdminServiceImpl implements AdminService {
 	
 	private final AdminDAO dao;
+	
+	@Value("${project.trasnlationCredentialPath}")
+	private String trasnlationCredentialPath;
+	
+	private Translate translate = TranslateOptions.getDefaultInstance().getService();
 	
 	@Autowired
 	@Qualifier("naverWebClient")
@@ -71,9 +78,8 @@ public class AdminServiceImpl implements AdminService {
 				wordData.setWordLevel(wordLevel);
 				
 				// 단어 뜻이 비었다면 네이버 백과사전 검색
-				String wordMean = (wordMeanData.equals("") ? this.searcNaverAPI(wordSpellData) : wordMeanData);
+				String wordMean = (wordMeanData.equals("") ? this.translateWithGCP(wordSpellData) : wordMeanData);
 				wordData.setWordMean(wordMean);
-				System.out.println(wordMean);
 				
 				wordData.setExampleSentence(exampleSentenceData);
 				wordData.setExampleMean(exampleMeanData);
@@ -107,6 +113,31 @@ public class AdminServiceImpl implements AdminService {
 	        System.out.println("API 요청 중 오류 발생: " + e.getMessage());
 	        return null; // 오류 처리
 	    }
+	}
+
+	@Override
+	public String translateWithGCP(String word) {
+		System.out.println(word + "aaaaaaaaa"); 
+		System.out.println("Env Var: " + System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
+		try {
+			Translation translation = translate.translate(
+					word, 
+					Translate.TranslateOption.sourceLanguage("en"),
+					Translate.TranslateOption.targetLanguage("ko")
+				);
+			
+			
+			System.out.println("bbbbbbbbbbb");
+		    String translatedText = translation.getTranslatedText();
+		    System.out.println("trans : " + translatedText);
+		    return translatedText;
+
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 }
