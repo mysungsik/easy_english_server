@@ -9,13 +9,12 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.easyeng.mschoi.config.webclients.WebClientInterface;
-import com.easyeng.mschoi.model.dao.AdminDAO;
+import com.easyeng.mschoi.model.dao.WordDataDAO;
 import com.easyeng.mschoi.model.dto.WordData;
 
 import lombok.RequiredArgsConstructor;
@@ -25,10 +24,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
 	
-	private final AdminDAO dao;
-	
-	@Value("${project.trasnlationCredentialPath}")
-	private String trasnlationCredentialPath;
+	private final WordDataDAO dao;
 	
 	private Translate translate = TranslateOptions.getDefaultInstance().getService();
 	
@@ -107,7 +103,6 @@ public class AdminServiceImpl implements AdminService {
 	                                             clientResponse -> Mono.error(new RuntimeException("API 요청 오류")))
 	                                   .bodyToMono(String.class)
 	                                   .block();
-	        System.out.println(searchResultBlock);
 	        return searchResultBlock;
 	    } catch (Exception e) {
 	        System.out.println("API 요청 중 오류 발생: " + e.getMessage());
@@ -115,21 +110,16 @@ public class AdminServiceImpl implements AdminService {
 	    }
 	}
 
+	// GCP 의 Translation API 사용하여 번역
 	@Override
 	public String translateWithGCP(String word) {
-		System.out.println(word + "aaaaaaaaa"); 
-		System.out.println("Env Var: " + System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
 		try {
 			Translation translation = translate.translate(
 					word, 
 					Translate.TranslateOption.sourceLanguage("en"),
 					Translate.TranslateOption.targetLanguage("ko")
 				);
-			
-			
-			System.out.println("bbbbbbbbbbb");
 		    String translatedText = translation.getTranslatedText();
-		    System.out.println("trans : " + translatedText);
 		    return translatedText;
 
 		} catch (Exception e) {

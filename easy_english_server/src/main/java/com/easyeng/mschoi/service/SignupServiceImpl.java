@@ -5,7 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.easyeng.mschoi.model.dao.SignupDAO;
+import com.easyeng.mschoi.model.dao.MemberDAO;
 import com.easyeng.mschoi.model.dto.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor // 자동 의존성 주입
 public class SignupServiceImpl  implements SignupService{
 	
-	private final SignupDAO dao;
+	private final MemberDAO dao;
 	
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;

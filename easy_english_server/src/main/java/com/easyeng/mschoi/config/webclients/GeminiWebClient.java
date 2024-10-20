@@ -15,7 +15,7 @@ public class GeminiWebClient implements WebClientInterface{
 	@Override
 	public WebClient createWebClient() {
 		StringBuilder baseUrl= new StringBuilder();
-		baseUrl.append("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=");
+		baseUrl.append("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=");
 		baseUrl.append(geminiKey);
 		
 		return WebClient.builder()

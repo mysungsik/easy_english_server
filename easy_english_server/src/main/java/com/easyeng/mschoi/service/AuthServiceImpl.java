@@ -2,7 +2,7 @@ package com.easyeng.mschoi.service;
 
 import org.springframework.stereotype.Service;
 
-import com.easyeng.mschoi.model.dao.AuthDAO;
+import com.easyeng.mschoi.model.dao.MemberDAO;
 import com.easyeng.mschoi.model.dto.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-	private final AuthDAO dao;
+	private final MemberDAO dao;
 
 	@Override
 	public Member getMemberInfoById(String memberId) {

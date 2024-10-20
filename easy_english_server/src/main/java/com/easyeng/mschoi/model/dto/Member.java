@@ -59,7 +59,7 @@ public class Member implements UserDetails{
     public Integer getCurrentWordLevel() {
     	return wordData != null ? wordData.getWordId() : null;
     }
-    
+
     @PrePersist
     public void setDefaultCurrentWord() {
     	if(this.wordData == null) {
