@@ -13,8 +13,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.easyeng.mschoi.config.webclients.WebClientInterface;
 import com.easyeng.mschoi.model.dao.MemberDAO;
+import com.easyeng.mschoi.model.dao.RepeatNoteDAO;
 import com.easyeng.mschoi.model.dao.WordDataDAO;
 import com.easyeng.mschoi.model.dto.Member;
+import com.easyeng.mschoi.model.dto.RepeatNote;
 import com.easyeng.mschoi.model.dto.WordData;
 import com.easyeng.mschoi.model.dto.gemeni.GeminiResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,13 +30,14 @@ public class LearnServiceImpl implements LearnService {
 	
 	private final MemberDAO memberDAO;
 	private final WordDataDAO wordDAO;
+	private final RepeatNoteDAO repeatNoteDAO;
 	private final ObjectMapper objectMapper;
 	
 	@Autowired
 	@Qualifier("geminiWebClient")
 	private WebClientInterface geminiWebClient; 
 
-	// 현재 문제에 대한 정보 가져오기, 맞췄으면 다음문제 가져오기
+	// 문제 가져오기
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public WordData getCurrentWordForMemeber(int memberNo,int currentWordId) {
@@ -116,6 +119,21 @@ public class LearnServiceImpl implements LearnService {
 		}
 		
 		return word;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public RepeatNote saveToRepatNote(RepeatNote repeatNote) {
+		RepeatNote result = null;
+		
+		try {
+			result = repeatNoteDAO.save(repeatNote);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("[ERROR] : 단어 저장 실패");
+		}
+		
+		return result;
 	}
 
 }

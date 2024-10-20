@@ -1,5 +1,6 @@
 package com.easyeng.mschoi.service;
 
+import com.easyeng.mschoi.model.dto.RepeatNote;
 import com.easyeng.mschoi.model.dto.WordData;
 
 public interface LearnService {
@@ -9,4 +10,7 @@ public interface LearnService {
 
 	// GEMINI API 사용하여 예시문장 생성
 	WordData createExampleSetence(WordData word);
+
+	// 단어장 저장
+	RepeatNote saveToRepatNote(RepeatNote repeatNote);
 }

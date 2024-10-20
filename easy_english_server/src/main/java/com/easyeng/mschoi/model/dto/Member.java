@@ -53,26 +53,29 @@ public class Member implements UserDetails{
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "current_word_id", referencedColumnName = "word_id", nullable = true)
     private WordData wordData;
+
+    // current_word_id 의 Default 값을 지정해주기 위한 메서드
+    @PrePersist // DB 저장 직전에 실행되는 메서드
+    public void setDefaultCurrentWord() {
+        if(this.wordData == null) {
+            WordData defaultWord = new WordData();
+            defaultWord.setWordId(1);
+            this.wordData = defaultWord;
+        }
+    }
     
     // 추가된 필드: word_level을 직접 매핑하지 않고, Getter를 통해 가져오기
-    @Transient // DB에 저장하지 않음, 계산된 필드 역할
+    @Transient // DB에 저장하지 않음. 단순 계산용 필드역할
     public Integer getCurrentWordLevel() {
     	return wordData != null ? wordData.getWordId() : null;
     }
 
-    @PrePersist
-    public void setDefaultCurrentWord() {
-    	if(this.wordData == null) {
-    		WordData defaultWord = new WordData();
-    		defaultWord.setWordId(1);
-    		this.wordData = defaultWord;
-    	}
-    }
-    
-    
     @Column(name = "member_auth", length = 20)
     @ColumnDefault("'ROLE_ADMIN'")			// member객체에 해당 key 자체가 없어야 Default 적용
     private String memberAuth = "ROLE_ADMIN";	// 따라서, 코드레벨에서 기본값 설정
+    
+    @Column(name="today_finish")
+    private Boolean isTodayFinish = false;
     
     // Spring Security 에서 사용하기 위한 Authority
 	@Override
