@@ -19,10 +19,10 @@ public class LearnController {
 	private final LearnService service;
 
 	@GetMapping("/getCurrentWordForMemeber")
-	public WordData getCurrentWordForMemeber(@RequestParam("memberNo") int memberNo) {
-		WordData result = service.getCurrentWordForMemeber(memberNo);
+	public WordData getCurrentWordForMemeber(@RequestParam("memberNo") int memberNo,
+											@RequestParam(name = "currentWordId", defaultValue = "0") int currentWordId ) {
+		WordData result = service.getCurrentWordForMemeber(memberNo, currentWordId);
 
 		return result;
 	}
-	
 }

@@ -34,26 +34,30 @@ public class LearnServiceImpl implements LearnService {
 	@Qualifier("geminiWebClient")
 	private WebClientInterface geminiWebClient; 
 
+	// 현재 문제에 대한 정보 가져오기, 맞췄으면 다음문제 가져오기
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public WordData getCurrentWordForMemeber(int memberNo) {
+	public WordData getCurrentWordForMemeber(int memberNo,int currentWordId) {
+		
+		// 정답 값을 전달했을 경우 currentWordId 값 != 0
+		// 유저의 CurrentWordId 데이터 업데이트
+		if (currentWordId != 0) {
+			memberDAO.updateMemberWordId(memberNo, currentWordId + 1);			
+		}
+		
+		
 		Member member = memberDAO.findById(memberNo).orElse(null);
 		WordData word = null;
 		
 		if (member != null) {
 			word = member.getWordData();
-			memberDAO.updateMemberWordId(memberNo, word.getWordId() + 1);
-			
 			// word 에 대해 예시문장이 없다면 생성
 			if (word.getExampleSentence().equals("") || word.getExampleSentence() == null
 					|| word.getExampleMean().equals("") || word.getExampleMean() == null) {
 				
 				// 글자에 대한 문장 및 문장 뜻 생성
 				word = this.createExampleSetence(word);
-				
-				System.out.println("생성한 문장 저장 :" + word.getExampleSentence());
-				
-				// 글자 데이터 DB 업데이트
+				 // 글자 데이터
 				wordDAO.save(word);
 			}
 		}
@@ -113,4 +117,5 @@ public class LearnServiceImpl implements LearnService {
 		
 		return word;
 	}
+
 }
