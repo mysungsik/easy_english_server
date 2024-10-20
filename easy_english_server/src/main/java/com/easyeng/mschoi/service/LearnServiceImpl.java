@@ -136,4 +136,10 @@ public class LearnServiceImpl implements LearnService {
 		return result;
 	}
 
+	@Override
+	public List<WordData> getRepeatNoteByMemberNo(int memberNo) {
+		List<WordData> result = repeatNoteDAO.findWordDataByMemberNo(memberNo);
+		return result;
+	}
+
 }

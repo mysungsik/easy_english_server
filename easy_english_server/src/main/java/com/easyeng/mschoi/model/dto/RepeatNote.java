@@ -33,11 +33,11 @@ public class RepeatNote {
 	private Integer repeatNo;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name= "member_no", nullable = false)
+	@JoinColumn(name= "member_no", referencedColumnName = "member_no", nullable = false)
 	private Member member;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "word_id", nullable = false)
+	@JoinColumn(name = "word_id", referencedColumnName = "word_id", nullable = false)
 	private WordData wordData;
 	
 	@Transient // DB에 저장하지 않음. 단순 계산용 필드역할

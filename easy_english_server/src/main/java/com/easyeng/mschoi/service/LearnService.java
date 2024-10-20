@@ -1,5 +1,7 @@
 package com.easyeng.mschoi.service;
 
+import java.util.List;
+
 import com.easyeng.mschoi.model.dto.RepeatNote;
 import com.easyeng.mschoi.model.dto.WordData;
 
@@ -13,4 +15,7 @@ public interface LearnService {
 
 	// 단어장 저장
 	RepeatNote saveToRepatNote(RepeatNote repeatNote);
+
+	// 단어장 가져오기
+	List<WordData> getRepeatNoteByMemberNo(int memberNo);
 }
