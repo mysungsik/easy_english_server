@@ -27,7 +27,7 @@ public class JwtUtil {
 		return jwtParser.parseClaimsJws(jwt).getBody();
 	}
 	
-	// 개별 클레임 추출
+	// 개별 클레임 추출 (Claims 객체를 사용한 익명함수를 생성하여, 해당 익명함수는 T 를 반환한다. 함수는 외부에서 정의하여 입력한다.)
 	public <T> T extractClaim(String jwt, Function<Claims, T> claimsResolver) {
 		final Claims claims = extractClaimsAll(jwt);
 		return claimsResolver.apply(claims);

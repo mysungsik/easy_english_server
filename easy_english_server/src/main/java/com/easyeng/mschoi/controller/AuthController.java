@@ -53,7 +53,6 @@ public class AuthController {
 			String jwt = jwtUtil.createJWT(claims, member.getMemberId());
 			
 			// 4. JWT 응답
-			System.out.println(jwt);
 			return ResponseEntity.ok(jwt);
 		
 		} catch (Exception e) {

@@ -23,7 +23,6 @@ public class CustomUserDetailsService implements UserDetailsService{
 		Member memberInfo = null;
 		
 		try {
-			System.out.println(memberId);
 			memberInfo = dao.findByMemberId(memberId);
 			
 		} catch (Exception e) {
