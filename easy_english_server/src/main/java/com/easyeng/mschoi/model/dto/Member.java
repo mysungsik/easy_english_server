@@ -15,8 +15,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "member")
 // 기존에 사용하는 Member 에 SpringSecurity 화를 위해 UserDetails 를 구현
@@ -50,7 +53,7 @@ public class Member implements UserDetails{
     @ColumnDefault("(current_date)")
     private LocalDate memberDeletedDt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "current_word_id", referencedColumnName = "word_id", nullable = true)
     private WordData wordData;
 
@@ -74,8 +77,8 @@ public class Member implements UserDetails{
     @ColumnDefault("'ROLE_ADMIN'")			// member객체에 해당 key 자체가 없어야 Default 적용
     private String memberAuth = "ROLE_ADMIN";	// 따라서, 코드레벨에서 기본값 설정
     
-    @Column(name="today_finish")
-    private Boolean isTodayFinish = false;
+    @Column(name="learn_cnt", nullable = false)
+    private Integer learnCnt = 0;	// 하루제한 20개
     
     // Spring Security 에서 사용하기 위한 Authority
 	@Override

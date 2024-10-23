@@ -2,13 +2,16 @@ package com.easyeng.mschoi.model.dto;
 
 import org.hibernate.annotations.ColumnDefault;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Data
 @NoArgsConstructor
+@Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // 추가
 @Table(name="word_data")
 public class WordData {
 

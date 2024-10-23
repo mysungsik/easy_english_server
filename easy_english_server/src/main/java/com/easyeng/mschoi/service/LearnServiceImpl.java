@@ -37,38 +37,51 @@ public class LearnServiceImpl implements LearnService {
 	@Qualifier("geminiWebClient")
 	private WebClientInterface geminiWebClient; 
 
-	// 문제 가져오기
+	/** 현재 멤버에 해당하는 오늘의 문제 가져오기
+	 *
+	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public WordData getCurrentWordForMemeber(int memberNo,int currentWordId) {
-		
-		// 정답 값을 전달했을 경우 currentWordId 값 != 0
-		// 유저의 CurrentWordId 데이터 업데이트
-		if (currentWordId != 0) {
-			memberDAO.updateMemberWordId(memberNo, currentWordId + 1);			
-		}
-		
 		
 		Member member = memberDAO.findById(memberNo).orElse(null);
 		WordData word = null;
 		
 		if (member != null) {
-			word = member.getWordData();
-			// word 에 대해 예시문장이 없다면 생성
-			if (word.getExampleSentence().equals("") || word.getExampleSentence() == null
-					|| word.getExampleMean().equals("") || word.getExampleMean() == null) {
+			
+			// 하루 최고 문제풀이 20문제
+			if (member.getLearnCnt() >= 20) {
+				return word;
+			}else {
+				// currentWordId == 0 : 현재 레벨의 문제 GET
+				// currentWordId != 0 : 클라이언트가 정답 제출, 다음 문제를 위해 WordId + 1 업데이트
+				if (currentWordId != 0) {
+					memberDAO.updateMemberWordId(memberNo, currentWordId + 1);
+					memberDAO.updateMemberLearnCnt(memberNo, member.getLearnCnt() + 1);
+					word = wordDAO.findById(currentWordId + 1).orElse(null);
+				} else {
+					word = memberDAO.findCurrentWordDataByMemberId(memberNo);				
+				}
 				
-				// 글자에 대한 문장 및 문장 뜻 생성
-				word = this.createExampleSetence(word);
-				 // 글자 데이터
-				wordDAO.save(word);
+				if(word != null) {
+					// word 에 대해 예시문장이 없다면 생성
+					if (word.getExampleSentence().equals("") || word.getExampleSentence() == null
+							|| word.getExampleMean().equals("") || word.getExampleMean() == null) {
+						
+						// word에 대한 문장 및 문장 뜻 생성
+						word = this.createExampleSetence(word);
+						wordDAO.save(word);
+					}
+				}
 			}
 		}
 		
 		return word;
 	}
 
-	// GEMINI API 사용하여 예시문장 생성
+	/** GEMINI API 사용하여 예시문장 생성
+	 *
+	 */
 	@Override
 	public WordData createExampleSetence(WordData word) {
 		WebClient request = geminiWebClient.createWebClient();
@@ -121,6 +134,9 @@ public class LearnServiceImpl implements LearnService {
 		return word;
 	}
 
+	/** 단어장에 단어 저장 함수
+	 *
+	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public RepeatNote saveToRepatNote(RepeatNote repeatNote) {
@@ -136,6 +152,9 @@ public class LearnServiceImpl implements LearnService {
 		return result;
 	}
 
+	/** 단어장 가져오기
+	 *
+	 */
 	@Override
 	public List<WordData> getRepeatNoteByMemberNo(int memberNo) {
 		List<WordData> result = repeatNoteDAO.findWordDataByMemberNo(memberNo);
