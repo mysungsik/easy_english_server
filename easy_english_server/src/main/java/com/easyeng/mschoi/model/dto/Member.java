@@ -80,6 +80,9 @@ public class Member implements UserDetails{
     @Column(name="learn_cnt", nullable = false)
     private Integer learnCnt = 0;	// 하루제한 20개
     
+    @Column(name="review_cnt", nullable = false)
+    private Integer reviewCnt = 0;	// 하루제한 20개
+    
     // Spring Security 에서 사용하기 위한 Authority
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

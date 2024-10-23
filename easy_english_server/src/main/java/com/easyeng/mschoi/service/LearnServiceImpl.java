@@ -161,4 +161,33 @@ public class LearnServiceImpl implements LearnService {
 		return result;
 	}
 
+	/** 복습용 20개의 데이터 가져오기
+	 *
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public WordData getRandomWordForRepeatByMember(int memberNo) {		
+		Member member = memberDAO.findById(memberNo).orElse(null);
+		WordData result = null;
+		
+		if (member != null) {
+			// 하루 최고 문제풀이 20문제
+			if (member.getReviewCnt() >= 20) {
+				return result;
+			}else {
+				// 유저가 최근까지 공부한 wordId
+				int limitWordId = member.getWordData().getWordId();
+
+				// 최근 값 이내로 하나의 랜덤 wordData GET
+				result = wordDAO.getRandomWordForRepeatByMember(limitWordId);
+				
+				// 복습량 업데이트
+				if (result != null) {
+					memberDAO.updateMemberReviewCnt(memberNo, member.getReviewCnt() + 1);
+				}
+			}
+		}
+		return result;
+	}
+
 }

@@ -49,13 +49,27 @@ public class LearnController {
 	public ResponseEntity<List<WordData>> getRepeatNoteByMemberNo(@RequestParam("memberNo") int memberNo){
 		
 		List<WordData> result = service.getRepeatNoteByMemberNo(memberNo);
-		
-		System.out.println(memberNo);
-		System.out.println(result);
+
 		if (result != null) {
 			return ResponseEntity.ok(result);			
 		}else {
 			return ResponseEntity.status(400).body(result);
 		}
 	}
+	
+	// 복습용 랜덤 20개의 데이터 가져오기
+	@GetMapping("/getRandomWordForRepeatByMember")
+	public ResponseEntity<WordData> getRandomWordForRepeatByMember(@RequestParam("memberNo") int memberNo){
+		
+		
+		WordData result = service.getRandomWordForRepeatByMember(memberNo);
+
+		if (result != null) {
+			return ResponseEntity.ok(result);			
+		}else {
+			return ResponseEntity.status(400).body(result);
+		}
+		
+	}
+	
 }

@@ -34,13 +34,21 @@ public interface MemberDAO extends JpaRepository<Member, Integer>{
 	@Query("UPDATE Member m SET m.wordData.wordId = :nextWordId WHERE m.memberNo = :memberNo")
 	void updateMemberWordId(@Param("memberNo") int memberNo, @Param("nextWordId") int nextWordId);
 
-	/** 유저의 오늘의 학습량 업데이트
+	/** 유저의 오늘의 학습 횟수 업데이트
 	 * @param memberNo
 	 * @param learnCnt
 	 */
 	@Modifying
 	@Query("UPDATE Member m SET m.learnCnt = :learnCnt WHERE m.memberNo = :memberNo")
 	void updateMemberLearnCnt(@Param("memberNo") int memberNo, @Param("learnCnt") int learnCnt);
+
+	/** 유저의 오늘의 복습 횟수 업데이트
+	 * @param memberNo
+	 * @param learnCnt
+	 */
+	@Modifying
+	@Query("UPDATE Member m SET m.reviewCnt = :reviewCnt WHERE m.memberNo = :memberNo")
+	void updateMemberReviewCnt(@Param("memberNo") int memberNo, @Param("reviewCnt") int reviewCnt);
 	
 	
 }
