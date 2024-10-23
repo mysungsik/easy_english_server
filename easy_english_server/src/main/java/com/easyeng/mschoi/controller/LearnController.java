@@ -1,6 +1,8 @@
 package com.easyeng.mschoi.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,50 +27,81 @@ public class LearnController {
 
 	// GET 현재 공부할 단어
 	@GetMapping("/getCurrentWordForMemeber")
-	public WordData getCurrentWordForMemeber(@RequestParam("memberNo") int memberNo,
+	public ResponseEntity<Map<String, Object>> getCurrentWordForMemeber(@RequestParam("memberNo") int memberNo,
 											@RequestParam(name = "currentWordId", defaultValue = "0") int currentWordId ) {
-		WordData result = service.getCurrentWordForMemeber(memberNo, currentWordId);
+		WordData wordData = service.getCurrentWordForMemeber(memberNo, currentWordId);
+		
+		Map<String, Object> result = new HashMap<>();
+		
+		// 데이터 반환
+		result.put("data", wordData);			
+		if (wordData != null) {
+			result.put("message", "새 단어를 정상적으로 데이터를 가져왔습니다.");
+			return ResponseEntity.ok(result);
+		}else {
+			result.put("message", "새 단어를 가져오는데 실패하였습니다.");
+			return ResponseEntity.status(400).body(result);
+		}
 
-		return result;
 	}
 	
 	// 단어장에 저장
 	@PostMapping("/saveToRepatNote")
-	public ResponseEntity<String> saveToRepatNote(@RequestBody RepeatNote repeatNote){
+	public ResponseEntity<Map<String, Object>> saveToRepatNote(@RequestBody RepeatNote repeatNote){
 		
-		RepeatNote result = service.saveToRepatNote(repeatNote);
-		if (result != null) {
-			return ResponseEntity.ok("성공적으로 저장하였습니다.");			
+		RepeatNote repeat = service.saveToRepatNote(repeatNote);
+
+		Map<String, Object> result = new HashMap<>();
+		
+		// 데이터 반환
+		result.put("data", repeat);			
+		if (repeat != null) {
+			result.put("message", "단어장에 성공적으로 저장하였습니다.");
+			return ResponseEntity.ok(result);
 		}else {
-			return ResponseEntity.status(400).body("단어 저장에 실패하였습니다.");
+			result.put("message", "단어장 저장에 실패하였습니다.");
+			return ResponseEntity.status(400).body(result);
 		}
 	}
 	
 	// 단어장 확인
 	@GetMapping("/getRepeatNoteByMemberNo")
-	public ResponseEntity<List<WordData>> getRepeatNoteByMemberNo(@RequestParam("memberNo") int memberNo){
+	public ResponseEntity<Map<String, Object>> getRepeatNoteByMemberNo(@RequestParam("memberNo") int memberNo){
 		
-		List<WordData> result = service.getRepeatNoteByMemberNo(memberNo);
+		List<WordData> repeatList = service.getRepeatNoteByMemberNo(memberNo);
 
-		if (result != null) {
-			return ResponseEntity.ok(result);			
+		Map<String, Object> result = new HashMap<>();
+		
+		// 데이터 반환
+		result.put("data", repeatList);			
+		if (repeatList.size() > 0) {
+			result.put("message", "단어장에 성공적으로 가져왔습니다..");
+			return ResponseEntity.ok(result);
 		}else {
+			result.put("message", "단어장 저장에 실패하였습니다.");
 			return ResponseEntity.status(400).body(result);
 		}
 	}
 	
 	// 복습용 랜덤 20개의 데이터 가져오기
-	@GetMapping("/getRandomWordForRepeatByMember")
-	public ResponseEntity<WordData> getRandomWordForRepeatByMember(@RequestParam("memberNo") int memberNo){
+	@GetMapping("/getRandomWordForReviewByMember")
+	public ResponseEntity<Map<String, Object>> getRandomWordForReviewByMember(@RequestParam("memberNo") int memberNo){
 		
 		
-		WordData result = service.getRandomWordForRepeatByMember(memberNo);
+		WordData reviewWord = service.getRandomWordForReviewByMember(memberNo);
 
-		if (result != null) {
-			return ResponseEntity.ok(result);			
+		Map<String, Object> result = new HashMap<>();
+		
+		// 데이터 반환
+		result.put("data", reviewWord);			
+		if (reviewWord != null) {
+			result.put("message", "복습단어를 가져오는데 성공했습니다.");
+			return ResponseEntity.ok(result);
 		}else {
+			result.put("message", "복습단어를 가져오는데 실패하였습니다.");
 			return ResponseEntity.status(400).body(result);
 		}
+
 		
 	}
 	

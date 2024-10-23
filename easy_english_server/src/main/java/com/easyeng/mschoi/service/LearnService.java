@@ -20,5 +20,5 @@ public interface LearnService {
 	List<WordData> getRepeatNoteByMemberNo(int memberNo);
 
 	// 복습용 데이터 가져오기
-	WordData getRandomWordForRepeatByMember(int memberNo);
+	WordData getRandomWordForReviewByMember(int memberNo);
 }

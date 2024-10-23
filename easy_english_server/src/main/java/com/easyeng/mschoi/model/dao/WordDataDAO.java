@@ -14,5 +14,5 @@ public interface WordDataDAO extends JpaRepository<WordData, Integer>{
 
 	// 예문이 있는 데이터, Limit
 	@Query(value = "SELECT * FROM word_data WHERE example_mean != '' AND word_id < :limitWordId order by RAND() LIMIT 1", nativeQuery = true)
-	WordData getRandomWordForRepeatByMember(@Param("limitWordId") int limitWordId);
+	WordData getRandomWordForReviewByMember(@Param("limitWordId") int limitWordId);
 }

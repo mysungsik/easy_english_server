@@ -166,7 +166,7 @@ public class LearnServiceImpl implements LearnService {
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public WordData getRandomWordForRepeatByMember(int memberNo) {		
+	public WordData getRandomWordForReviewByMember(int memberNo) {		
 		Member member = memberDAO.findById(memberNo).orElse(null);
 		WordData result = null;
 		
@@ -179,7 +179,7 @@ public class LearnServiceImpl implements LearnService {
 				int limitWordId = member.getWordData().getWordId();
 
 				// 최근 값 이내로 하나의 랜덤 wordData GET
-				result = wordDAO.getRandomWordForRepeatByMember(limitWordId);
+				result = wordDAO.getRandomWordForReviewByMember(limitWordId);
 				
 				// 복습량 업데이트
 				if (result != null) {
