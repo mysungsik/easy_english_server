@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,24 +65,66 @@ public class LearnController {
 		}
 	}
 	
-	// 단어장 확인
-	@GetMapping("/getRepeatNoteByMemberNo")
-	public ResponseEntity<Map<String, Object>> getRepeatNoteByMemberNo(@RequestParam("memberNo") int memberNo){
+	// 개별 단어장 확인
+	@GetMapping("/checkWordFromRepeatNote")
+	public ResponseEntity<Map<String, Object>> saveToRepatNote(@RequestParam("memberNo") int memberNo,
+																@RequestParam("wordId") int wordId){
 		
-		List<WordData> repeatList = service.getRepeatNoteByMemberNo(memberNo);
+		Integer repeat = service.checkWordFromRepeatNote(memberNo, wordId);
+
+		Map<String, Object> result = new HashMap<>();
+		
+		// 데이터 반환
+		result.put("data", repeat);			
+		if (repeat >= 0) {
+			result.put("message", "단어장에서 개별 단어를 가져오는데 성공했습니다.");
+			return ResponseEntity.ok(result);
+		}else {
+			result.put("message", "단어장에서 개별 단어를 가져오는데 실패했습니다.");
+			return ResponseEntity.status(400).body(result);
+		}
+	}
+	
+	// 모든 단어장 확인
+	@GetMapping("/getAllWordsFromRepeatNote")
+	public ResponseEntity<Map<String, Object>> getAllWordsFromRepeatNote(@RequestParam("memberNo") int memberNo){
+		
+		List<WordData> repeatList = service.getAllWordsFromRepeatNote(memberNo);
 
 		Map<String, Object> result = new HashMap<>();
 		
 		// 데이터 반환
 		result.put("data", repeatList);			
 		if (repeatList.size() > 0) {
-			result.put("message", "단어장에 성공적으로 가져왔습니다..");
+			result.put("message", "단어장에 성공적으로 가져왔습니다.");
 			return ResponseEntity.ok(result);
 		}else {
 			result.put("message", "단어장 저장에 실패하였습니다.");
 			return ResponseEntity.status(400).body(result);
 		}
 	}
+	
+	// 개별 단어장 삭제
+	@DeleteMapping("/deleteWordFromRepatNote")
+	public ResponseEntity<Map<String, Object>> deleteWordFromRepatNote(@RequestParam("memberNo") int memberNo,
+																		@RequestParam("wordId") int wordId){
+		
+		Integer repeat = service.deleteWordFromRepatNote(memberNo, wordId);
+
+		Map<String, Object> result = new HashMap<>();
+		
+		// 데이터 반환
+		result.put("data", repeat);			
+		if (repeat >= 0) {
+			result.put("message", "단어장에서 삭제에 성공했습니다.");
+			return ResponseEntity.ok(result);
+		}else {
+			result.put("message", "단어장에서 삭제에 실패하였습니다.");
+			return ResponseEntity.status(400).body(result);
+		}
+	}
+
+	
 	
 	// 복습용 랜덤 20개의 데이터 가져오기
 	@GetMapping("/getRandomWordForReviewByMember")
@@ -101,8 +144,6 @@ public class LearnController {
 			result.put("message", "복습단어를 가져오는데 실패하였습니다.");
 			return ResponseEntity.status(400).body(result);
 		}
-
-		
 	}
 	
 }

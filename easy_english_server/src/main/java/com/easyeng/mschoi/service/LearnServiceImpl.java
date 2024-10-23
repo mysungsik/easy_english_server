@@ -151,12 +151,51 @@ public class LearnServiceImpl implements LearnService {
 		
 		return result;
 	}
-
-	/** 단어장 가져오기
+	
+	/** 개별 단어장 확인
 	 *
 	 */
 	@Override
-	public List<WordData> getRepeatNoteByMemberNo(int memberNo) {
+	public Integer checkWordFromRepeatNote(int memberNo, int wordId) {
+		Integer result = 0;
+		
+		try {
+			result = repeatNoteDAO.findRepeatNoteByMemberNoAndWordId(memberNo, wordId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("[ERROR] : 확인 실패");
+		}
+
+		return result;
+	}
+	
+
+	/** 개별 단어장 삭제
+	 *
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public Integer deleteWordFromRepatNote(int memberNo, int wordId) {
+		Integer result = 0;
+		
+		try {
+			result = repeatNoteDAO.deleteRepeatNoteByMemberNoAndWordId(memberNo, wordId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("[ERROR] : 삭제 실패");
+		}
+
+		return result;
+	}
+
+	
+	
+
+	/** 전체 단어장 가져오기
+	 *
+	 */
+	@Override
+	public List<WordData> getAllWordsFromRepeatNote(int memberNo) {
 		List<WordData> result = repeatNoteDAO.findWordDataByMemberNo(memberNo);
 		return result;
 	}
